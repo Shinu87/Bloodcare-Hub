@@ -7,7 +7,9 @@
 -Donor Management: Register, update profiles, and view donation history.
 
 -Blood Stock Tracking: Monitor blood type availability with automated updates.
+
 -Hospital Dashboard: Manage blood requests, track inventory, and communicate with donors in real-time.
+
 -Notifications & Alerts: Integrated alerts for low blood stock and urgent requests.
 ## Technologies Used
 

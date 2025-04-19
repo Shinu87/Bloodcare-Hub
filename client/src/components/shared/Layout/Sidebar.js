@@ -1,118 +1,76 @@
 import React from "react";
-// import { userMenu } from "./Menus/userMenu";
 import { useLocation, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import "../../../styles/Layout.css";
 
 const Sidebar = () => {
-  //GET USER STATE
   const { user } = useSelector((state) => state.auth);
-
   const location = useLocation();
 
-  return (
-    <div>
-      <div className="sidebar">
-        <div className="menu">
-          {user?.role === "organisation" && (
-            <>
-              <div
-                className={`menu-item ${location.pathname === "/" && "active"}`}
-              >
-                <i className="fa-solid fa-warehouse"></i>
-                <Link to="/">Inventory</Link>
-              </div>
-              <div
-                className={`menu-item ${
-                  location.pathname === "/donar" && "active"
-                }`}
-              >
-                <i className="fa-solid fa-hand-holding-medical"></i>
-                <Link to="/donar">Donar</Link>
-              </div>
-              <div
-                className={`menu-item ${
-                  location.pathname === "/hospital" && "active"
-                }`}
-              >
-                <i className="fa-solid fa-hospital"></i>
-                <Link to="/hospital">Hospital</Link>
-              </div>
-            </>
-          )}
-          {user?.role === "admin" && (
-            <>
-              <div
-                className={`menu-item ${
-                  location.pathname === "/donar-list" && "active"
-                }`}
-              >
-                <i className="fa-solid fa-warehouse"></i>
-                <Link to="/donar-list">Donar List</Link>
-              </div>
-              <div
-                className={`menu-item ${
-                  location.pathname === "/hospital-list" && "active"
-                }`}
-              >
-                <i className="fa-solid fa-hand-holding-medical"></i>
-                <Link to="/hospital-list">Hospital List</Link>
-              </div>
-              <div
-                className={`menu-item ${
-                  location.pathname === "/org-list" && "active"
-                }`}
-              >
-                <i className="fa-solid fa-hospital"></i>
-                <Link to="/org-list">Organisation List</Link>
-              </div>
-            </>
-          )}
-          {(user?.role === "donar" || user?.role === "hospital") && (
-            <div
-              className={`menu-item ${
-                location.pathname === "/orgnaisation" && "active"
-              }`}
-            >
-              <i className="fa-sharp fa-solid fa-building-ngo"></i>
-              <Link to="/orgnaisation">Orgnaisation</Link>
-            </div>
-          )}
-          {user?.role === "hospital" && (
-            <div
-              className={`menu-item ${
-                location.pathname === "/consumer" && "active"
-              }`}
-            >
-              <i className="fa-sharp fa-solid fa-building-ngo"></i>
-              <Link to="/consumer">Consumer</Link>
-            </div>
-          )}
-          {user?.role === "donar" && (
-            <div
-              className={`menu-item ${
-                location.pathname === "/donation" && "active"
-              }`}
-            >
-              <i className="fa-sharp fa-solid fa-building-ngo"></i>
-              <Link to="/donation">Donation</Link>
-            </div>
-          )}
+  const navContainerStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f8f9fa",
+    padding: "10px 0",
+    gap: "20px",
+    borderBottom: "2px solid #ddd",
+    boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+  };
 
-          {/* {userMenu.map((menu) => {
-            const isActive = location.pathname === menu.path;
-            return (
-              <div
-                className={`menu-item ${isActive && "active"}`}
-                key={menu.name}
-              >
-                <i className={menu.icon}></i>
-                <Link to={menu.path}>{menu.name}</Link>
-              </div>
-            );
-          })} */}
-        </div>
-      </div>
+  const navItemStyle = (isActive) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    fontWeight: "500",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    textDecoration: "none",
+    color: isActive ? "white" : "#333",
+    backgroundColor: isActive ? "#007bff" : "transparent",
+    transition: "background 0.3s ease",
+  });
+
+  const iconStyle = (isActive) => ({
+    color: isActive ? "white" : "#007bff",
+  });
+
+  const renderNavItem = (to, label, icon) => {
+    const isActive = location.pathname === to;
+    return (
+      <Link to={to} style={navItemStyle(isActive)} key={to}>
+        <i className={`fa-solid ${icon}`} style={iconStyle(isActive)}></i>
+        {label}
+      </Link>
+    );
+  };
+
+  return (
+    <div style={navContainerStyle}>
+      {user?.role === "organisation" && (
+        <>
+          {renderNavItem("/", "Inventory", "fa-warehouse")}
+          {renderNavItem("/donar", "Donar", "fa-hand-holding-medical")}
+          {renderNavItem("/hospital", "Hospital", "fa-hospital")}
+        </>
+      )}
+      {user?.role === "admin" && (
+        <>
+          {renderNavItem("/donar-list", "Donar List", "fa-warehouse")}
+          {renderNavItem(
+            "/hospital-list",
+            "Hospital List",
+            "fa-hand-holding-medical"
+          )}
+          {renderNavItem("/org-list", "Organisation List", "fa-hospital")}
+        </>
+      )}
+      {(user?.role === "donar" || user?.role === "hospital") &&
+        renderNavItem("/orgnaisation", "Organisation", "fa-building-ngo")}
+      {user?.role === "hospital" &&
+        renderNavItem("/consumer", "Consumer", "fa-building-ngo")}
+      {user?.role === "donar" &&
+        renderNavItem("/donation", "Donation", "fa-building-ngo")}
     </div>
   );
 };

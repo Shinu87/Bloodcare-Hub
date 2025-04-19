@@ -1,0 +1,96 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # CI Job for Backend (Node.js/Express)
+  backend:
+    runs-on: windows-latest  # Use Windows environment for backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js for Backend
+      - name: Set up Node.js for Backend
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Your backend's Node.js version
+
+      # Install dependencies for Backend
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm install
+
+      # Run tests for Backend (if available)
+      - name: Run Backend Tests
+        run: |
+          cd backend
+          npm test
+
+  # CI Job for Frontend (React)
+  frontend:
+    runs-on: windows-latest  # Use Windows environment for frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js for Frontend
+      - name: Set up Node.js for Frontend
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Your frontend's Node.js version
+
+      # Install dependencies for Frontend
+      - name: Install Frontend Dependencies
+        run: |
+          cd client
+          npm install
+
+      # Run tests for Frontend (if available)
+      - name: Run Frontend Tests
+        run: |
+          cd client
+          npm test
+
+  # Deploy Job for Backend (Windows)
+  deploy-backend:
+    runs-on: windows-latest
+    needs: backend  # Ensure backend CI job runs first
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Deploy Backend (e.g., Heroku, Render, etc.)
+      - name: Deploy Backend to Heroku
+        run: |
+          cd backend
+          # Deploy to Heroku (Example: Replace with your cloud deployment command)
+          heroku login
+          git remote add heroku https://git.heroku.com/your-heroku-app.git
+          git push heroku main
+
+  # Deploy Job for Frontend (Windows)
+  deploy-frontend:
+    runs-on: windows-latest
+    needs: frontend  # Ensure frontend CI job runs first
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Deploy Frontend (Vercel, Netlify, etc.)
+      - name: Deploy Frontend to Vercel
+        run: |
+          cd client
+          npm run build
+          vercel --prod --token=$VERCEL_TOKEN  # Use your Vercel token for deployment
